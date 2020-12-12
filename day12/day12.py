@@ -68,10 +68,50 @@ Action F means to move forward to the waypoint a number of times equal to the gi
 The waypoint starts 10 units east and 1 unit north relative to the ship. The waypoint is relative to the ship; that is, 
 if the ship moves, the waypoint moves with it.
 """
-def follow_waypoints(waypoints):
+# https://stackoverflow.com/questions/34372480/rotate-point-about-another-point-in-degrees-python
+def rotate_point(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+
+    The angle should be given in degrees.
+    """
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + math.cos(math.radians(angle)) * (px - ox) - math.sin(math.radians(angle)) * (py - oy)
+    qy = oy + math.sin(math.radians(angle)) * (px - ox) + math.cos(math.radians(angle)) * (py - oy)
+    return(qx, qy)
+
+
+
+def follow_waypoints(instructions):
+
     ship_x = 0
     ship_y = 0
     ship_rotation = 0 # north=90deg, south=270deg or -90deg, etc
+    wp_x = ship_x + 10
+    wp_y = ship_y + 1
+
+    for instruction in instructions:
+        direction = instruction[0]
+        magnitude = int(instruction[1:])
+
+        if direction == 'N':
+            wp_y += magnitude
+        elif direction == 'E':
+            wp_x += magnitude
+        elif direction == 'S':
+            wp_y -= magnitude
+        elif direction == 'W':
+            wp_x -= magnitude
+        elif direction == 'F':
+            for _ in range(magnitude):
+                ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, wp_x, wp_y, 0)
+        elif direction == 'L':
+            wp_x, wp_y = rotate_point((0, 0), (wp_x, wp_y), magnitude)
+        elif direction == 'R':
+            wp_x, wp_y = rotate_point((0, 0), (wp_x, wp_y), -magnitude)
+
     return(ship_x, ship_y, ship_rotation)
 
 
@@ -86,7 +126,9 @@ def main():
     manhattan_distance = abs(ship_x) + abs(ship_y)
     print(f'Part 1: {manhattan_distance}')
 
-    # ship_x, ship_y, ship_rotation = follow_waypoints(lines)
+    ship_x, ship_y, ship_rotation = follow_waypoints(lines)
+    manhattan_distance = int(abs(ship_x) + abs(ship_y))
+    print(f'Part 2: {manhattan_distance}')
     return()
 
 
