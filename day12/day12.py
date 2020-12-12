@@ -32,23 +32,46 @@ def follow_route(instructions):
         direction = instruction[0]
         magnitude = int(instruction[1:])
 
+        adj_x = 0
+        adj_y = 0
+        adj_rot = 0
+
         if direction == 'N':
-            ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, 0, magnitude, 0)
+            adj_y = magnitude
         elif direction == 'E':
-            ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, magnitude, 0, 0)
+            adj_x = magnitude
         elif direction == 'S':
-            ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, 0, -magnitude, 0)
+            adj_y = -magnitude
         elif direction == 'W':
-            ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, -magnitude, 0, 0)
+            adj_x = -magnitude
         elif direction == 'F':
             adj_x = int(math.cos(math.radians(ship_rotation))) * magnitude
             adj_y = int(math.sin(math.radians(ship_rotation))) * magnitude
-            ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, adj_x, adj_y, 0)
         elif direction == 'L':
-            ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, 0, 0, magnitude)
+            adj_rot = magnitude
         elif direction == 'R':
-            ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, 0, 0, -magnitude)
+            adj_rot = -magnitude
 
+        ship_x, ship_y, ship_rotation = adjust_ship(ship_x, ship_y, ship_rotation, adj_x, adj_y, adj_rot)
+
+    return(ship_x, ship_y, ship_rotation)
+
+
+"""
+Action N means to move the waypoint north by the given value.
+Action S means to move the waypoint south by the given value.
+Action E means to move the waypoint east by the given value.
+Action W means to move the waypoint west by the given value.
+Action L means to rotate the waypoint around the ship left (counter-clockwise) the given number of degrees.
+Action R means to rotate the waypoint around the ship right (clockwise) the given number of degrees.
+Action F means to move forward to the waypoint a number of times equal to the given value.
+The waypoint starts 10 units east and 1 unit north relative to the ship. The waypoint is relative to the ship; that is, 
+if the ship moves, the waypoint moves with it.
+"""
+def follow_waypoints(waypoints):
+    ship_x = 0
+    ship_y = 0
+    ship_rotation = 0 # north=90deg, south=270deg or -90deg, etc
     return(ship_x, ship_y, ship_rotation)
 
 
@@ -63,6 +86,7 @@ def main():
     manhattan_distance = abs(ship_x) + abs(ship_y)
     print(f'Part 1: {manhattan_distance}')
 
+    # ship_x, ship_y, ship_rotation = follow_waypoints(lines)
     return()
 
 
