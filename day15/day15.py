@@ -1,4 +1,4 @@
-def analyze_numbers_game(starting_numbers, end_number):
+def analyze_numbers_game(starting_numbers, end_number, part_num):
     
     numbers_dict = {}
     for index, starting_number in enumerate(starting_numbers):
@@ -20,7 +20,7 @@ def analyze_numbers_game(starting_numbers, end_number):
         else:
             numbers_dict.update({next_number_spoken: [numbers_spoken+1]})
 
-    print(f'Part 1: {last_number_spoken}')     
+    print(f'Part {part_num}: {last_number_spoken}')     
     
     return()
 
@@ -32,7 +32,8 @@ def main():
     with open("./day15/input.txt", 'r') as infile:
         for line in infile:
             game_input = [int(x) for x in line.split(',')]
-            analyze_numbers_game(game_input, 2020)
+            analyze_numbers_game(game_input, 2020, 1)
+            analyze_numbers_game(game_input, 30000000, 2)
 
     return()
 
